@@ -1,43 +1,29 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput, Button} from 'react-native';
+import {StyleSheet, View, Button} from 'react-native';
+import GoalInput from './components/GoalInput';
+import GoalList from './components/GoalList';
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#fff',
-        padding: 50,
-        alignItems: 'center',
-        flex: 1,
-    },
-    goalInput: {
-        flexDirection: 'row',
-        alignContent: 'center',
-
-    },
-    inputField: {
-        width: '70%',
-        borderBottomWidth: 1,
-        borderColor: 'black',
-        marginRight: 5
+    screen: {
+        padding: 50
     },
 });
 
 
 export default function App() {
-    const [goal, setGoal] = useState('');
+    const [isAddModal, setIsAddModal] = useState(false);
     const [goals, setGoals] = useState([]);
-    const updateGoals = () => {
+    const addGoal = (goal) => {
         setGoals([...goals, goal]);
-        setGoal('');
+    };
+    const removeGoal = (goalIdToRemove) => {
+        setGoals(goals.filter(({id})=>(id !== goalIdToRemove)));
     };
     return (
-        <View style={styles.container}>
-            <View style={styles.goalInput}>
-                <TextInput placeholder="enter goal" style={styles.inputField} value={goal} onChangeText={setGoal}/>
-                <Button title="ADD" onPress={updateGoals}/>
-            </View>
-            <View>
-                { goals.map((goal, index) => <Text key={index}>{goal}</Text>) }
-            </View>
+        <View style={styles.screen}>
+            <Button title="ADD GOAL" onPress={() => setIsAddModal(true)}/>
+            <GoalInput visible={isAddModal} addGoal={addGoal} onCancel={setIsAddModal} />
+            <GoalList deleteGoal={removeGoal} goals={goals} />
         </View>
     );
 }
